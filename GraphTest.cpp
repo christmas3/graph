@@ -147,11 +147,17 @@ TEST(GraphSuit, MstTest)
     EXPECT_TRUE(g->insert({ 5, 6, 11 }));
 
     graph::Mst mst(*g);
-
     auto result = mst.getResult();
 
-    std::cerr << "mst.size(): " << result.size() << std::endl;
+    EXPECT_EQ(result.size(), 6);
+
     for (int i = 0; i < result.size(); ++i) {
         std::cerr << result.get(i);
     }
+
+    int i = 0;
+    for (const auto& edge : { graph::EdgeWeighted{ 0, 3, 5 }, { 0, 1, 7 }, { 1, 4, 7 }, { 2, 4, 5 }, { 3, 5, 6 }, { 4, 6, 9 } }) {
+        EXPECT_EQ(result[i++], edge);
+    }
+    EXPECT_EQ(i, 6);
 }
