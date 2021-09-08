@@ -10,13 +10,14 @@ struct Edge
     int v1, v2;
 };
 
+template<typename T, typename E = Edge>
 struct BaseGraph
 {
     virtual ~BaseGraph() = default;
 
     virtual size_t sizeV() const = 0;
     virtual size_t sizeE() const = 0;
-    virtual bool insert(const Edge&) = 0;
+    virtual bool insert(const E&) = 0;
 
     struct Iterator;
 
@@ -34,7 +35,7 @@ struct BaseGraph
     {
         using iterator_category = std::forward_iterator_tag;
         using difference_type = std::ptrdiff_t;
-        using value_type = int;
+        using value_type = T;
         using pointer = value_type*;
         using reference = value_type&;
 
@@ -65,7 +66,8 @@ struct BaseGraph
     };
 };
 
-inline void reverseGraph(const BaseGraph& in, BaseGraph& out)
+template<typename T, typename E>
+inline void reverseGraph(const BaseGraph<T, E>& in, BaseGraph<T, E>& out)
 {
     for (size_t i = 0; i < in.sizeV(); ++i) {
         for (auto iter = in.cbegin(i); iter != in.cend(i); ++iter) {
@@ -73,5 +75,35 @@ inline void reverseGraph(const BaseGraph& in, BaseGraph& out)
         }
     }
 }
+
+using BaseGraphVertex = BaseGraph<int, Edge>;
+
+struct EdgeWeighted : public Edge
+{
+    int weight;
+    bool from(int v) const { return v1 == v; }
+};
+
+inline std::ostream& operator<<(std::ostream& out, const EdgeWeighted& e)
+{
+    return out << "v1: " << e.v1 << " v2: " << e.v2 << " weight: " << e.weight << std::endl;
+}
+
+inline bool operator==(const EdgeWeighted& l, const EdgeWeighted& r)
+{
+    return l.v1 == r.v1 && l.v2 == r.v2 && l.weight == r.weight;
+}
+
+inline bool operator<(const EdgeWeighted& l, const EdgeWeighted& r)
+{
+    return l.weight < r.weight;
+}
+
+inline bool operator<=(const EdgeWeighted& l, const EdgeWeighted& r)
+{
+    return l.weight <= r.weight;
+}
+
+using BaseGraphWeighted = BaseGraph<EdgeWeighted, EdgeWeighted>;
 
 } // namespace graph

@@ -72,6 +72,7 @@ public:
     SizeType size() const override { return size_; }
     SizeType capacity() const override { return capacity_; }
     T get(SizeType index) const override { return arr_[index]; }
+    T& operator[](SizeType index) { return arr_[index]; }
     void put(const T& item, SizeType index) override { putImpl(item, index); }
     void put(T&& item, SizeType index) override { putImpl(std::move(item), index); }
     T& back() { return arr_[size_ - 1]; }

@@ -5,10 +5,11 @@
 #include <cstring>
 
 namespace graph {
+template<typename T>
 class StrengthComponentsK
 {
 public:
-    explicit StrengthComponentsK(const BaseGraph& g)
+    explicit StrengthComponentsK(const BaseGraph<T>& g)
         : graph_(g)
         , id_(new int[g.sizeV()])
         , postI_(new int[g.sizeV()])
@@ -45,7 +46,7 @@ public:
     int* result() { return id_; }
 
 private:
-    void dfs(const BaseGraph& g, int v)
+    void dfs(const BaseGraph<T>& g, int v)
     {
         id_[v] = curId_;
         for (auto iter = g.cbegin(v); iter != g.cend(v); ++iter) {
@@ -56,7 +57,7 @@ private:
         postI_[curV_++] = v;
     }
 
-    const BaseGraph& graph_;
+    const BaseGraph<T>& graph_;
     int* id_;
     int* postI_;
     int curId_;

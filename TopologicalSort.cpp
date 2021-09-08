@@ -3,7 +3,8 @@
 
 namespace graph {
 
-TopologicalSort::TopologicalSort(const BaseGraph& g)
+template<typename T>
+TopologicalSort<T>::TopologicalSort(const BaseGraph<T>& g)
     : graph_(g)
     , sum_(new int[graph_.sizeV()])
 {
@@ -39,16 +40,20 @@ TopologicalSort::TopologicalSort(const BaseGraph& g)
     }
 }
 
-TopologicalSort::~TopologicalSort()
+template<typename T>
+TopologicalSort<T>::~TopologicalSort()
 {
     delete[] sum_;
 }
 
-void TopologicalSort::printSum()
+template<typename T>
+void TopologicalSort<T>::printSum()
 {
     for (size_t i = 0; i < graph_.sizeV(); ++i) {
         std::cerr << i << ": " << sum_[i] << std::endl;
     }
 }
+
+template class TopologicalSort<int>;
 
 } // namespace graph

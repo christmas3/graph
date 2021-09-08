@@ -1,9 +1,12 @@
 #include "BaseGraph.h"
 
 namespace graph {
-class AdjacentVectorGraph : public BaseGraph
+template<typename T, typename E>
+class AdjacentVectorGraph : public BaseGraph<T, E>
 {
 public:
+    using typename BaseGraph<T, E>::Iterator;
+
     AdjacentVectorGraph(size_t v, size_t s);
     ~AdjacentVectorGraph() override;
 
@@ -13,15 +16,20 @@ public:
     Iterator end(size_t v) override;
     const Iterator cbegin(size_t v) const override;
     const Iterator cend(size_t v) const override;
+    bool insert(const E&) override;
     void print() const override;
-    bool insert(const Edge&) override;
-    std::unique_ptr<BaseGraph> createEmpty() const override;
+    std::unique_ptr<BaseGraph<T, E>> createEmpty() const override;
 
 private:
     size_t sizeV_;
     size_t sizeE_;
     size_t sizeS_;
-    int** graph_;
+    T** graph_;
     int* end_;
 };
+
+using AdjacentVectorVertexGraph = AdjacentVectorGraph<int, Edge>;
+
+using AdjacentVectorWeightGraph = AdjacentVectorGraph<EdgeWeighted, EdgeWeighted>;
+
 } // namespace graph
