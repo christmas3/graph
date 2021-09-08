@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
-#include <regex>
 
 #include "AdjacentVectorGraph.h"
+#include "Mst.h"
 #include "StrengthComponents.h"
 #include "TopologicalSort.h"
 
@@ -9,7 +9,7 @@ static std::string delim(80, '=');
 
 TEST(GraphSuit, KosarajuTest)
 {
-    std::unique_ptr<graph::BaseGraph> g(new graph::AdjacentVectorGraph(8, 3));
+    std::unique_ptr<graph::BaseGraphVertex> g(new graph::AdjacentVectorVertexGraph(8, 3));
 
     EXPECT_EQ(g->sizeE(), 0);
     EXPECT_EQ(g->sizeV(), 8);
@@ -44,7 +44,7 @@ TEST(GraphSuit, KosarajuTest)
     EXPECT_TRUE(g->insert({ 7, 6 }));
     EXPECT_EQ(g->sizeE(), 14);
 
-    std::unique_ptr<graph::BaseGraph> gReverse(new graph::AdjacentVectorGraph(8, 3));
+    std::unique_ptr<graph::BaseGraphVertex> gReverse(new graph::AdjacentVectorVertexGraph(8, 3));
 
     graph::reverseGraph(*g, *gReverse);
 
@@ -67,7 +67,7 @@ TEST(GraphSuit, KosarajuTest)
 
 TEST(GraphSuit, DemucronTest)
 {
-    std::unique_ptr<graph::BaseGraph> g(new graph::AdjacentVectorGraph(14, 5));
+    std::unique_ptr<graph::BaseGraphVertex> g(new graph::AdjacentVectorVertexGraph(14, 5));
 
     EXPECT_TRUE(g->insert({ 0, 2 }));
     EXPECT_TRUE(g->insert({ 0, 12 }));
@@ -123,4 +123,35 @@ TEST(GraphSuit, DemucronTest)
 
     EXPECT_EQ(result.get(5).size(), 1);
     EXPECT_EQ(result.get(5).get(0), 2);
+}
+
+TEST(GraphSuit, MstTest)
+{
+    std::unique_ptr<graph::BaseGraphWeighted> g(new graph::AdjacentVectorWeightGraph(7, 5));
+
+    EXPECT_TRUE(g->insert({ 0, 1, 7 }));
+    EXPECT_TRUE(g->insert({ 0, 3, 5 }));
+
+    EXPECT_TRUE(g->insert({ 1, 2, 8 }));
+    EXPECT_TRUE(g->insert({ 1, 3, 9 }));
+    EXPECT_TRUE(g->insert({ 1, 4, 7 }));
+
+    EXPECT_TRUE(g->insert({ 2, 4, 5 }));
+
+    EXPECT_TRUE(g->insert({ 3, 4, 15 }));
+    EXPECT_TRUE(g->insert({ 3, 5, 6 }));
+
+    EXPECT_TRUE(g->insert({ 4, 5, 8 }));
+    EXPECT_TRUE(g->insert({ 4, 6, 9 }));
+
+    EXPECT_TRUE(g->insert({ 5, 6, 11 }));
+
+    graph::Mst mst(*g);
+
+    auto result = mst.getResult();
+
+    std::cerr << "mst.size(): " << result.size() << std::endl;
+    for (int i = 0; i < result.size(); ++i) {
+        std::cerr << result.get(i);
+    }
 }

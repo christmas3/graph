@@ -8,10 +8,11 @@ namespace graph {
 template<typename T>
 using DMatrix = VectorArray<VectorArray<T>>;
 
+template<typename T>
 class TopologicalSort
 {
 public:
-    explicit TopologicalSort(const BaseGraph&);
+    explicit TopologicalSort(const BaseGraph<T>&);
     ~TopologicalSort();
 
     const DMatrix<int>& result() const { return result_; }
@@ -19,7 +20,7 @@ public:
 private:
     void printSum();
 
-    const BaseGraph& graph_;
+    const BaseGraph<T>& graph_;
 
     DMatrix<int> result_;
     int* sum_;
