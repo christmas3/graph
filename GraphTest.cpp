@@ -2,6 +2,7 @@
 
 #include "AdjacentVectorGraph.h"
 #include "Mst.h"
+#include "Spt.h"
 #include "StrengthComponents.h"
 #include "TopologicalSort.h"
 
@@ -157,6 +158,61 @@ TEST(GraphSuit, MstTest)
 
     int i = 0;
     for (const auto& edge : { graph::EdgeWeighted{ 0, 3, 5 }, { 0, 1, 7 }, { 1, 4, 7 }, { 2, 4, 5 }, { 3, 5, 6 }, { 4, 6, 9 } }) {
+        EXPECT_EQ(result[i++], edge);
+    }
+    EXPECT_EQ(i, 6);
+}
+
+TEST(GraphSuit, SptTest)
+{
+    std::unique_ptr<graph::BaseGraphWeighted> g(new graph::AdjacentVectorWeightGraph(7, 5));
+
+    EXPECT_TRUE(g->insert({ 0, 1, 2 }));
+    EXPECT_TRUE(g->insert({ 0, 2, 3 }));
+    EXPECT_TRUE(g->insert({ 0, 3, 6 }));
+
+    EXPECT_TRUE(g->insert({ 1, 2, 4 }));
+    EXPECT_TRUE(g->insert({ 1, 4, 9 }));
+
+    EXPECT_TRUE(g->insert({ 2, 3, 1 }));
+    EXPECT_TRUE(g->insert({ 2, 4, 7 }));
+    EXPECT_TRUE(g->insert({ 2, 5, 6 }));
+
+    EXPECT_TRUE(g->insert({ 3, 5, 4 }));
+
+    EXPECT_TRUE(g->insert({ 4, 5, 1 }));
+    EXPECT_TRUE(g->insert({ 4, 6, 5 }));
+
+    EXPECT_TRUE(g->insert({ 5, 6, 8 }));
+
+    graph::Spt spt0(*g, 0);
+    auto result = spt0.getResult();
+
+    EXPECT_EQ(result.size(), 6);
+
+    for (int i = 0; i < result.size(); ++i) {
+        std::cerr << result.get(i);
+    }
+
+    int i = 0;
+    for (const auto& edge : { graph::EdgeWeighted{ 0, 1, 2 }, { 0, 2, 3 }, { 2, 3, 1 }, { 3, 5, 4 }, { 4, 5, 1 }, { 4, 6, 5 } }) {
+        EXPECT_EQ(result[i++], edge);
+    }
+    EXPECT_EQ(i, 6);
+
+    graph::Spt spt2(*g, 2);
+    result = spt2.getResult();
+
+    EXPECT_EQ(result.size(), 6);
+
+    std::cerr << std::endl;
+
+    for (int i = 0; i < result.size(); ++i) {
+        std::cerr << result.get(i);
+    }
+
+    i = 0;
+    for (const auto& edge : { graph::EdgeWeighted{ 0, 2, 3 }, { 1, 2, 4 }, { 2, 3, 1 }, { 3, 5, 4 }, { 4, 5, 1 }, { 4, 6, 5 } }) {
         EXPECT_EQ(result[i++], edge);
     }
     EXPECT_EQ(i, 6);

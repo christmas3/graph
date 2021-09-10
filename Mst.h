@@ -13,8 +13,6 @@ public:
     VectorArray<EdgeWeighted> getResult();
 
 private:
-    static VectorArray<EdgeWeighted> edges(const BaseGraphWeighted&);
-
     class Dfs
     {
     public:

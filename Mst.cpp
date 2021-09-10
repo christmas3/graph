@@ -12,7 +12,7 @@ Mst::Mst(const BaseGraphWeighted& graph)
     : graph_(graph)
     , mst_(graph.createEmpty())
 {
-    auto e = edges(graph_);
+    auto e = edges<VectorArray<EdgeWeighted>>(graph_);
     QuickSort<EdgeWeighted>(&e[0], e.size());
     for (size_t i = 0; i < e.size() && mst_->sizeE() < mst_->sizeV() - 1; ++i) {
         if (isIsolate(*mst_, e[i])) {
@@ -32,23 +32,8 @@ Mst::Mst(const BaseGraphWeighted& graph)
 
 VectorArray<EdgeWeighted> Mst::getResult()
 {
-    auto res = edges(*mst_);
+    auto res = edges<VectorArray<EdgeWeighted>>(*mst_);
     return res;
-}
-
-VectorArray<EdgeWeighted> Mst::edges(const BaseGraphWeighted& graph)
-{
-    VectorArray<EdgeWeighted> result(graph.sizeE());
-
-    for (int i = 0; i < graph.sizeV(); ++i) {
-        for (auto iter = graph.cbegin(i); iter != graph.cend(i); ++iter) {
-            if (iter->from(i)) {
-                result.putBack(*iter);
-            }
-        }
-    }
-
-    return result;
 }
 
 Mst::Dfs::Dfs(const BaseGraphWeighted& graph, int vFrom, int vTo)

@@ -94,6 +94,11 @@ inline bool operator==(const EdgeWeighted& l, const EdgeWeighted& r)
     return l.v1 == r.v1 && l.v2 == r.v2 && l.weight == r.weight;
 }
 
+inline bool operator!=(const EdgeWeighted& l, const EdgeWeighted& r)
+{
+    return !(l == r);
+}
+
 inline bool operator<(const EdgeWeighted& l, const EdgeWeighted& r)
 {
     return l.weight < r.weight;
@@ -105,5 +110,33 @@ inline bool operator<=(const EdgeWeighted& l, const EdgeWeighted& r)
 }
 
 using BaseGraphWeighted = BaseGraph<EdgeWeighted, EdgeWeighted>;
+
+inline EdgeWeighted getEdge(const BaseGraphWeighted& g, int v1, int v2)
+{
+    for (auto iter = g.cbegin(v1); iter != g.cend(v1); ++iter) {
+        auto v = iter->from(v1) ? iter->v2 : iter->v1;
+        if (v == v2) {
+            return *iter;
+        }
+    }
+
+    return {};
+}
+
+template<typename Vec>
+inline Vec edges(const BaseGraphWeighted& g)
+{
+    Vec result(g.sizeE());
+
+    for (int i = 0; i < g.sizeV(); ++i) {
+        for (auto iter = g.cbegin(i); iter != g.cend(i); ++iter) {
+            if (iter->from(i)) {
+                result.putBack(*iter);
+            }
+        }
+    }
+
+    return result;
+}
 
 } // namespace graph
